@@ -1,3 +1,4 @@
+pub mod chacha20;
 pub mod sha256;
 
 pub trait PseudoRandomGenerator {

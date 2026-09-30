@@ -5,6 +5,7 @@ use std::io::{self, Write};
 
 use generators::PseudoRandomGenerator;
 use generators::sha256::Sha256Counter;
+use generators::chacha20::ChaCha20Generator;
 use num_bigint::BigUint;
 use number::generate_40_digit_number;
 
@@ -47,6 +48,7 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
         println!("\nPseudorandom Number Generator");
         println!("\nSelect an algorithm:");
         println!("1. SHA-256");
+        println!("2. ChaCha20");
 
         let option = read_line("> ");
 
@@ -61,7 +63,18 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
 
                 return Box::new(Sha256Counter::new(seed, salt));
             }
-            "2" => println!("ChaCha20 is not implemented yet."),
+
+            "2" => {
+                println!();
+                println!("ChaCha20 selected.");
+                println!();
+
+                let key_seed = read_biguint("Key seed: ");
+                let nonce_seed = read_biguint("Nonce seed: ");
+
+                return Box::new(ChaCha20Generator::new(key_seed, nonce_seed));
+            }
+            
             "3" => println!("Blum Blum Shub is not implemented yet."),
             _ => println!("Invalid option."),
         }

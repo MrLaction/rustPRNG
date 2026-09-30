@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+chacha20 = { version = "0.10.2", features = ["cipher"] }
 num-bigint = "0.4"
 num-traits = "0.2"
 sha2 = "0.10"
