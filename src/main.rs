@@ -1,5 +1,6 @@
 mod generators;
 mod number;
+mod prime;
 
 use std::io::{self, Write};
 
@@ -74,7 +75,7 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
 
                 return Box::new(ChaCha20Generator::new(key_seed, nonce_seed));
             }
-            
+
             "3" => println!("Blum Blum Shub is not implemented yet."),
             _ => println!("Invalid option."),
         }

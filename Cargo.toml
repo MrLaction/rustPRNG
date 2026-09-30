@@ -7,4 +7,5 @@ edition = "2024"
 chacha20 = { version = "0.10.2", features = ["cipher"] }
 num-bigint = "0.4"
 num-traits = "0.2"
+rand = "0.8.5"
 sha2 = "0.10"
