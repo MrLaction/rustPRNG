@@ -4,6 +4,7 @@ use num_traits::FromPrimitive;
 use crate::generators::PseudoRandomGenerator;
 
 const RANDOM_BYTES: usize = 17;
+const MAX_REJECTION_ATTEMPTS: usize = 1024;
 
 fn min_40_digits() -> BigUint {
     BigUint::from_u8(10).unwrap().pow(39)
@@ -20,7 +21,7 @@ where
     let min = min_40_digits();
     let range = range_40_digits();
 
-    loop {
+    for _ in 0..MAX_REJECTION_ATTEMPTS {
         //17 bytes = 136 bits. Keep only 133 bits because
         //10^40 < 2^133, reducing unnecessary rejections.
         let mut bytes = [0u8; RANDOM_BYTES];
@@ -37,6 +38,11 @@ where
             return &min + candidate;
         }
     }
+    panic!(
+        "Could not generate a 40-digit number after {} attempts. \
+         Try different generator parameters.",
+        MAX_REJECTION_ATTEMPTS
+    );
 }
 
 #[cfg(test)]

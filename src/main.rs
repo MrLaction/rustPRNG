@@ -7,6 +7,7 @@ use std::io::{self, Write};
 use generators::PseudoRandomGenerator;
 use generators::sha256::Sha256Counter;
 use generators::chacha20::ChaCha20Generator;
+use generators::bbs::BlumBlumShub;
 use num_bigint::BigUint;
 use number::generate_40_digit_number;
 
@@ -50,6 +51,7 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
         println!("\nSelect an algorithm:");
         println!("1. SHA-256");
         println!("2. ChaCha20");
+        println!("3. Blum Blum Shub");
 
         let option = read_line("> ");
 
@@ -76,7 +78,24 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
                 return Box::new(ChaCha20Generator::new(key_seed, nonce_seed));
             }
 
-            "3" => println!("Blum Blum Shub is not implemented yet."),
+            "3" => {
+                println!();
+                println!("Blum Blum Shub selected.");
+                println!("p and q must be distinct probable primes.");
+                println!("Both must satisfy value % 4 == 3.");
+                println!();
+
+                let p = read_biguint("p: ");
+                let q = read_biguint("q: ");
+                let seed = read_biguint("Seed: ");
+
+                match BlumBlumShub::new(p, q, seed) {
+                    Ok(generator) => return Box::new(generator),
+                    Err(message) => {
+                        println!("Invalid BBS parameters: {message}");
+                    }
+                }
+            }
             _ => println!("Invalid option."),
         }
     }

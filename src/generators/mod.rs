@@ -1,3 +1,4 @@
+pub mod bbs;
 pub mod chacha20;
 pub mod sha256;
 
