@@ -1,6 +1,7 @@
 mod generators;
 mod number;
 mod prime;
+mod experiment;
 
 use std::io::{self, Write};
 
@@ -8,6 +9,7 @@ use generators::PseudoRandomGenerator;
 use generators::sha256::Sha256Counter;
 use generators::chacha20::ChaCha20Generator;
 use generators::bbs::BlumBlumShub;
+use experiment::{ExperimentResult, run_experiment};
 use num_bigint::BigUint;
 use number::generate_40_digit_number;
 
@@ -101,18 +103,88 @@ fn select_generator() -> Box<dyn PseudoRandomGenerator> {
     }
 }
 
+fn select_mode() -> u8 {
+    loop {
+        println!();
+        println!("Select a mode:");
+        println!("1. Generate numbers");
+        println!("2. Generate numbers and count probable primes");
+
+        let option = read_line("> ");
+
+        match option.as_str() {
+            "1" => return 1,
+            "2" => return 2,
+            _ => println!("Invalid option."),
+        }
+    }
+}
+
+fn print_experiment_results(result: &ExperimentResult) {
+    println!();
+    println!("Generated numbers:");
+    println!();
+
+    //Print the stored results without generating or testing again.
+    for (index, entry) in result.numbers.iter().enumerate() {
+        let label = if entry.probably_prime {
+            "probably prime"
+        } else {
+            "not prime"
+        };
+
+        println!("{:>5}: {} | {}", index + 1, entry.number, label);
+    }
+
+    let generated = result.numbers.len();
+    let composites = generated - result.probable_primes;
+
+    let percentage = if generated == 0 {
+        0.0
+    } else {
+        result.probable_primes as f64 / generated as f64 * 100.0
+    };
+
+    println!();
+    println!("Experiment summary");
+    println!("Generated numbers: {generated}");
+    println!("Probable primes: {}", result.probable_primes);
+    println!("Composites: {composites}");
+    println!("Probable prime percentage: {percentage:.4}%");
+    println!(
+        "Generation and testing time: {:.3} s",
+        result.elapsed.as_secs_f64()
+    );
+}
+
 fn main() {
     let mut generator = select_generator();
 
     println!();
     println!("Algorithm: {}", generator.name());
 
-    let count = read_usize("How many numbers do you want to generate?: ");
+    let mode = select_mode();
+    let count = read_usize("How many numbers do you want to generate? ");
 
-    println!();
+    match mode {
+        1 => {
+            println!();
 
-    for i in 1..=count {
-        let number = generate_40_digit_number(generator.as_mut());
-        println!("{i:>5}: {number}");
+            for index in 1..=count {
+                let number = generate_40_digit_number(generator.as_mut());
+                println!("{index:>5}: {number}");
+            }
+        }
+
+        2 => {
+            println!();
+            println!("Generating and testing {count} numbers...");
+
+            let result = run_experiment(generator.as_mut(), count);
+
+            print_experiment_results(&result);
+        }
+
+        _ => unreachable!("Mode was validated by select_mode"),
     }
 }
