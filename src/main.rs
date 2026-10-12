@@ -2,6 +2,7 @@ mod generators;
 mod number;
 mod prime;
 mod experiment;
+mod cryptography;
 
 use std::io::{self, Write};
 
@@ -157,7 +158,7 @@ fn print_experiment_results(result: &ExperimentResult) {
     );
 }
 
-fn main() {
+fn run_number_experiments() {
     let mut generator = select_generator();
 
     println!();
@@ -186,5 +187,30 @@ fn main() {
         }
 
         _ => unreachable!("Mode was validated by select_mode"),
+    }
+}
+
+fn main() {
+    loop {
+        println!();
+        println!("Main menu");
+        println!("1. Number generation and primality experiments");
+        println!("2. Cryptography");
+        println!("0. Exit");
+
+        let option = read_line("> ");
+
+        match option.as_str() {
+            "1" => {
+                run_number_experiments();
+                return;
+            }
+            "2" => {
+                cryptography::run();
+                return;
+            }
+            "0" => return,
+            _ => println!("Invalid option."),
+        }
     }
 }
