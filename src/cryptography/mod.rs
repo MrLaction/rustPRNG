@@ -3,6 +3,10 @@ mod keys;
 mod primes;
 mod receiver;
 mod transmitter;
+pub mod coursework;
+pub mod verified;
+pub mod educational;
+mod textbook;
 
 use std::io::{self, Write};
 use std::time::Instant;

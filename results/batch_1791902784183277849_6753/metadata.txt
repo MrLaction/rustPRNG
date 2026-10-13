@@ -1,0 +1,11 @@
+format_version=1
+batch_id=batch_1791902784183277849_6753
+algorithm=SHA-256 Counter
+seed=12908389213
+salt=12783665722
+generated_numbers=10000
+probable_primes=107
+composites=9893
+miller_rabin_rounds=32
+generation_and_testing_seconds=0.075117
+verification_status=pending
