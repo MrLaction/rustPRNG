@@ -204,15 +204,9 @@ It is an additional demonstration. Option `5` is the workflow that directly uses
 
 Each output block hashes a domain identifier, length-prefixed seed and salt encodings, and an incrementing counter:
 
-$$
-B_i =
-\operatorname{SHA256}
-\left(
-D \parallel L(S) \parallel S
-\parallel L(T) \parallel T
-\parallel C_i
-\right).
-$$
+```math
+B_i = \mathrm{SHA256}\left(D \parallel L(S) \parallel S \parallel L(T) \parallel T \parallel C_i\right).
+```
 
 Here:
 
@@ -298,10 +292,9 @@ The primality module first handles small values and divisibility by the primes f
 
 For an odd candidate $N>37$, it decomposes:
 
-$$
-N-1=d\,2^s,
-\qquad d\text{ odd}.
-$$
+```math
+N-1 = d \cdot 2^s,\qquad d\text{ odd}.
+```
 
 Each round chooses an independent uniformly sampled base:
 
@@ -323,10 +316,10 @@ $$
 
 or:
 
-$$
-a^{d2^r}\equiv-1\pmod N
-\quad\text{for some }0\le r<s.
-$$
+```math
+a^{d \cdot 2^r} \equiv -1 \pmod{N}
+\quad\text{for some }0 \le r \lt s.
+```
 
 Repeated modular squaring checks the second condition.
 
@@ -362,17 +355,15 @@ $$
 
 For two distinct primes, the Carmichael function is:
 
-$$
-\lambda(n)=\operatorname{lcm}(p-1,q-1).
-$$
+```math
+\lambda(n) = \mathrm{lcm}(p-1,q-1).
+```
 
 The implementation calculates the least common multiple using:
 
-$$
-\operatorname{lcm}(a,b)
-=
-\frac{a}{\gcd(a,b)}\,b.
-$$
+```math
+\mathrm{lcm}(a,b) = \frac{a}{\gcd(a,b)} \cdot b.
+```
 
 The public exponent is fixed at:
 
@@ -408,15 +399,15 @@ $$
 
 Reducing $u$ modulo $\lambda(n)$ gives $d$. Signed `BigInt` values hold intermediate coefficients; the normalized inverse is converted to `BigUint`.
 
-The transmitter receives $(n,e)`. The receiver holds $(n,d)`. The factors are taken directly from the imported batch; this route does not generate replacement primes.
+The transmitter receives the public key $(n,e)$. The receiver holds the private key $(n,d)$. The factors are taken directly from the imported batch; this route does not generate replacement primes.
 
 ### Encrypting and decrypting integers
 
 The message must satisfy:
 
-$$
-0\le m<n.
-$$
+```math
+0 \le m \lt n.
+```
 
 Encryption computes:
 
